@@ -12,8 +12,8 @@ image = Image.open('internet.png')
 st.image(image.resize((1000, 300)))
 
 # Prediction function
-def internet_downtime_prediction(City, Locality, WeatherCondition, DownloadSpeed_Mbps, UploadSpeed_Mbps, Latency_ms, Jitter_ms, PacketLoss, Complaints):
-    features = np.array([[City, Locality, WeatherCondition, DownloadSpeed_Mbps, UploadSpeed_Mbps, Latency_ms, Jitter_ms, PacketLoss, Complaints]])
+def internet_downtime_prediction(DownloadSpeed_Mbps, UploadSpeed_Mbps, Latency_ms, Jitter_ms, PacketLoss, Complaints):
+    features = np.array([[DownloadSpeed_Mbps, UploadSpeed_Mbps, Latency_ms, Jitter_ms, PacketLoss, Complaints]])
     prediction = model.predict(features)
     return prediction[0]
 
@@ -90,7 +90,7 @@ def main():
     )
 
     if st.button("Predict Downtime"):
-        result = internet_downtime_prediction(City, Locality, WeatherCondition, DownloadSpeed_Mbps, UploadSpeed_Mbps, Latency_ms, Jitter_ms, PacketLoss, Complaints)
+        result = internet_downtime_prediction(DownloadSpeed_Mbps, UploadSpeed_Mbps, Latency_ms, Jitter_ms, PacketLoss, Complaints)
         st.success(f"Predicted Downtime Category: {result}")
 
     if st.button("About"):
