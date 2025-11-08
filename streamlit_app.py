@@ -5,7 +5,7 @@ import streamlit as st
 from PIL import Image
 
 # Load model
-model = joblib.load('classifier.joblib')
+model = joblib.load('Random_Forest_model.joblib')
 
 # Display header image
 image = Image.open('internet.png')
