@@ -5,21 +5,30 @@ import streamlit as st
 from PIL import Image
 
 # Load model
-model = joblib.load('Random_Forest_model.joblib')
+model = joblib.load('Random_Forest_model2.joblib')
 
 # Display header image
 image = Image.open('internet.png')
 st.image(image.resize((1000, 300)))
 
-# Prediction function
-def internet_downtime_prediction(DownloadSpeed_Mbps, UploadSpeed_Mbps, Latency_ms, Jitter_ms, PacketLoss, Complaints):
-    features = np.array([[DownloadSpeed_Mbps, UploadSpeed_Mbps, Latency_ms, Jitter_ms, PacketLoss, Complaints]])
+def internet_downtime_prediction(City, Locality, WeatherCondition, DownloadSpeed_Mbps, UploadSpeed_Mbps, Latency_ms, Jitter_ms, PacketLoss, Complaints):
+    features = pd.DataFrame([{
+        'City': City,
+        'Locality': Locality,
+        'WeatherCondition': WeatherCondition,
+        'DownloadSpeed_Mbps': DownloadSpeed_Mbps,
+        'UploadSpeed_Mbps': UploadSpeed_Mbps,
+        'Latency_ms': Latency_ms,
+        'Jitter_ms': Jitter_ms,
+        'PacketLoss_%': PacketLoss,   
+        'Complaints': Complaints
+    }])
     prediction = model.predict(features)
     return prediction[0]
 
 # Main app
 def main():
-    st.title("🌐 Internet Downtime Prediction Web App")
+    st.title("🌐 Internet Downtime Prediction")
 
     # City to Locality mapping
     city_localities = {
@@ -90,12 +99,12 @@ def main():
     )
 
     if st.button("Predict Downtime"):
-        result = internet_downtime_prediction(DownloadSpeed_Mbps, UploadSpeed_Mbps, Latency_ms, Jitter_ms, PacketLoss, Complaints)
+        result = internet_downtime_prediction(City, Locality, WeatherCondition, DownloadSpeed_Mbps, UploadSpeed_Mbps, Latency_ms, Jitter_ms, PacketLoss, Complaints)
         st.success(f"Predicted Downtime Category: {result}")
 
     if st.button("About"):
-        st.text("Classifier: Support Vector Machine")
-        st.text("Accuracy: 85.16%")
+        st.text("Classifier: Random Forest Classifier")
+        st.text("Accuracy: 92%")
         st.text("Built by: Suraj R. Yadav")
 
 if __name__ == '__main__':
