@@ -51,41 +51,41 @@ def main():
     WeatherCondition = st.selectbox("Weather Condition", ['Sunny', 'Stormy', 'Cloudy', 'Rainy'], index=None, placeholder="Select Weather Condition")
 
     DownloadSpeed_Mbps = st.number_input(
-        "Download Speed (Mbps) [Range: 0.0 – 100.0]",
+        "Download Speed (Mbps) [Range: 0.0 – 200]",
         min_value=0.0,
-        max_value=100.0,
+        max_value=200.0,
         format="%.1f",   # Limits input to 1 decimal places
         step=0.1        # Increases/decreases by 0.1
     )
 
     UploadSpeed_Mbps = st.number_input(
-        "Upload Speed (Mbps) [Range: 0.0 – 40.0]",
+        "Upload Speed (Mbps) [Range: 0.0 – 50.0]",
         min_value=0.0,
-        max_value=40.0,
+        max_value=50.0,
         format="%.1f",   # Limits input to 1 decimal places
         step=0.1        # Increases/decreases by 0.1
     )
 
     Latency_ms = st.number_input(
-        "Latency (ms) [Range: 5.0 – 145.0]",
-        min_value=5.0,
+        "Latency (ms) [Range: 0.5 – 145.0]",
+        min_value=0.5,
         max_value=145.0,
         format="%.1f",   # Limits input to 1 decimal places
         step=0.1        # Increases/decreases by 0.1
     )
 
     Jitter_ms = st.number_input(
-        "Jitter (ms) [Range: 1.0 – 30.0]",
-        min_value=1.0,
-        max_value=30.0,
+        "Jitter (ms) [Range: 0.1 – 35.0]",
+        min_value=0.1,
+        max_value=35.0,
         format="%.1f",   # Limits input to 1 decimal places
         step=0.1        # Increases/decreases by 0.1
     )
 
     PacketLoss = st.number_input(
-        "Packet Loss (%) [Range: 0.0 – 6.0]",
+        "Packet Loss (%) [Range: 0.0 – 7.0]",
         min_value=0.0,
-        max_value=6.0,
+        max_value=7.0,
         format="%.1f",   # Limits input to 1 decimal places
         step=0.1        # Increases/decreases by 0.1
     )
@@ -99,13 +99,37 @@ def main():
     )
 
     if st.button("Predict Downtime"):
-        result = internet_downtime_prediction(City, Locality, WeatherCondition, DownloadSpeed_Mbps, UploadSpeed_Mbps, Latency_ms, Jitter_ms, PacketLoss, Complaints)
-        st.success(f"Predicted Downtime Category: {result}")
+        result = internet_downtime_prediction(
+            City, Locality, WeatherCondition, 
+            DownloadSpeed_Mbps, UploadSpeed_Mbps, 
+            Latency_ms, Jitter_ms, PacketLoss, Complaints
+        )
+    
+        # Default color for label
+        label_html = f'<span style="color: red; font-weight:bold;">Predicted Downtime Category:</span> '
+    
+        # Set color based on prediction
+        if result == "Low_Downtime":
+            value_html = f'<span style="color: lightgreen; font-weight:bold;">{result}</span>'
+        elif result == "Moderate_Downtime":
+            value_html = f'<span style="color: yellow; font-weight:bold;">{result}</span>'
+        elif result == "High_Downtime":
+            value_html = f'<span style="color: orange; font-weight:bold;">{result}</span>'
+        else:
+            value_html = f'<span style="color: black;">{result}</span>'
+    
+        # Display colored prediction
+        st.markdown(label_html + value_html, unsafe_allow_html=True)
+    
+        # Show About info after prediction
+        st.info(
+            """
+            **Classifier:** Random Forest Classifier  
+            **Accuracy:** 92.00 %  
+            **Built by:** Suraj R. Yadav
+            """
+        )
 
-    if st.button("About"):
-        st.text("Classifier: Random Forest Classifier")
-        st.text("Accuracy: 92%")
-        st.text("Built by: Suraj R. Yadav")
 
 if __name__ == '__main__':
     main()
